@@ -10,9 +10,21 @@
  *
  * Learn more at https://developers.cloudflare.com/workers/
  */
+export interface Env {
+	p6: D1Database;
+}
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		return new Response("Yana Elina :)");
 	},
 } satisfies ExportedHandler<Env>;
+
+async function queryDatabase(db: D1Database) {
+	// Connect and execute a query
+	const { results } = await db.prepare("SELECT * FROM users").all();
+	return results;
+}
+
+
+
