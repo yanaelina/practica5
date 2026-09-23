@@ -16,7 +16,8 @@ export interface Env {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		return new Response("Yana Elina :)");
+		const data = await queryDatabase(env.p6);
+		return Response.json(data);
 	},
 } satisfies ExportedHandler<Env>;
 
