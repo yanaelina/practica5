@@ -7,4 +7,13 @@ export default defineConfig({
 			wrangler: { configPath: "./wrangler.jsonc" },
 		}),
 	],
+	test: {
+		coverage: {
+			// Workers runtime does not support V8 coverage; Istanbul is required
+			provider: "istanbul",
+			include: ["src/**/*.ts"],
+			reporter: ["text", "html", "lcov", "json-summary"],
+			reportsDirectory: "./coverage",
+		},
+	},
 });
