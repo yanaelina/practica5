@@ -4,7 +4,7 @@ on:
     branches:
       - main
 jobs:
-  test-and-deploy:
+  test-and-deploy-dev:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -21,8 +21,49 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Deploy to Cloudflare Workers
+      - name: Build
+        run: npm run build
+
+      - name: Run tests with coverage
+        run: npm run coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: Deploy to DEV (BD p6)
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+
+  deploy-prod:
+    needs: test-and-deploy-dev
+    runs-on: ubuntu-latest
+    # Requires manual approval configured in Settings → Environments → production
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy to PROD (BD p7-prod)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --env prod

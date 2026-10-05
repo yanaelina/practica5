@@ -3,6 +3,7 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
+	//Ambiente de DEV (existente)
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "still-boat-48a1",
 	"main": "src/index.ts",
@@ -18,7 +19,21 @@
 		"database_name": "p6",
 		"database_id": "343c0714-ea4f-4121-a4db-f26d6cd9d1bf"
 	}
-	]
+	],
+	//Ambiente de PROD (nuevo)
+	"env": {
+  		"prod": {
+    		"name": "still-boat-48a1-prod",
+    		"d1_databases": [
+      		{
+        		"binding": "p6",
+        		"database_name": "p7-prod",
+        		"database_id": "998f9465-26b2-4a7b-97aa-eefa85bfc278"
+      		}
+    		]
+  		}
+	}
+
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
